@@ -1,6 +1,6 @@
 {
   "name": "@author.io/rollup-plugin-wcbuilder",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A rollup plugin for building author-elements web components.",
   "main": "dist/rollup-plugin-wc-builder.cjs.js",
   "module": "dist/rollup-plugin-wc-builder.es.js",
