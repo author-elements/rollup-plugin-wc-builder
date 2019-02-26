@@ -1,0 +1,44 @@
+{
+  "name": "@author.io/rollup-plugin-wcbuilder",
+  "version": "1.0.0",
+  "description": "A rollup plugin for building author-elements web components.",
+  "main": "dist/rollup-plugin-wc-builder.cjs.js",
+  "module": "dist/rollup-plugin-wc-builder.es.js",
+  "scripts": {
+    "test": "npm run build && node test/sanity.js",
+    "build": "rollup -c"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/author-elements/rollup-plugin-wcbuilder.git"
+  },
+  "keywords": [
+    "rollup-plugin",
+    "author-elements",
+    "author.io",
+    "authorio",
+    "web",
+    "components",
+    "builder"
+  ],
+  "author": "Author.io",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/author-elements/rollup-plugin-wc-builder/issues"
+  },
+  "homepage": "https://github.com/author-elements/rollup-plugin-wc-builder#readme",
+  "dependencies": {
+    "clean-css": "^4.2.1",
+    "html-minifier": "^3.5.21",
+    "postcss": "^7.0.14",
+    "rollup-pluginutils": "^2.4.1"
+  },
+  "devDependencies": {
+    "rollup-plugin-buble": "^0.19.6",
+    "rollup": "^1.2.3",
+    "tape": "^4.10.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

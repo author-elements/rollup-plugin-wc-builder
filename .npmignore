@@ -1,0 +1,6 @@
+tests
+.*
+_*
+env.json
+dist
+rollup.config.js
