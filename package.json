@@ -6,7 +6,8 @@
   "module": "dist/rollup-plugin-wc-builder.es.js",
   "scripts": {
     "test": "npm run build && node test/sanity.js",
-    "build": "rollup -c"
+    "build": "rollup -c",
+    "deploy": "npm run build && npm publish --access=public"
   },
   "repository": {
     "type": "git",
@@ -19,7 +20,10 @@
     "authorio",
     "web",
     "components",
-    "builder"
+    "builder",
+    "custom",
+    "elements",
+    "html"
   ],
   "author": "Author.io",
   "license": "MIT",
