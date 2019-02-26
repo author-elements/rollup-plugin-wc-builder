@@ -1,5 +1,6 @@
 // rollup-plugin-wc-bulder
 import { createFilter } from 'rollup-pluginutils'
+const MagicString = require('magic-string')
 const fs = require('fs')
 const path = require('path')
 const postcss = require('postcss')
@@ -84,11 +85,13 @@ export default function wcbuilder (options = {}) {
   }
 
   return {
-    name: 'wc-builder',
+    name: 'wcbuilder',
     transform (code, filepath) {
       if (!filter(filepath)) {
         return null
       }
+
+      const magicString = new MagicString(code)
 
       // Process Files
       build.processJS(code)
@@ -96,14 +99,25 @@ export default function wcbuilder (options = {}) {
       build.processTemplate(filepath)
 
       // Concatenate results
-      build.js = build.js.replace(/{{TEMPLATE-STRING}}/gi, minifyHTML(`<template><style>@charset "UTF-8"; ${build.css}</style>${build.template}</template>`, {
+      let token = '{{TEMPLATE-STRING}}'
+      let start = build.js.indexOf(token)
+      let end = start + token.length
+      let injectedCode = minifyHTML(`<template><style>@charset "UTF-8"; ${build.css}</style>${build.template}</template>`, {
         collapseWhitespace: true,
         removeComments: true
-      }))
+      })
 
-      return {
-        code: build.js
+      magicString.overwrite(start, end, injectedCode)
+
+      let result = {
+        code: magicString.toString()
       }
+
+      if (options.sourceMap !== false && options.sourcemap !== false) {
+				result.map = magicString.generateMap({ hires: true })
+      }
+
+      return result
     }
   }
 }
