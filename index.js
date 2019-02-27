@@ -127,7 +127,7 @@ export default function wcbuilder (options = {}) {
         let baseClassCheck = `
           if (!AuthorBaseElement) {
             console.error('[ERROR] <${build.tagName}> Required dependency "AuthorBaseElement" not found.')
-            console.info('AuthorBaseElement is available at ${localPkg.repository.url.replace(/git\+|\.git/gi, '')}')
+            console.info('AuthorBaseElement is available at ${localPkg.repository.url.replace(/git\+|\.git/gi, '').replace(build.tagName.replace('author-', ''), 'base')}')
           }
         `
         magicString.prependLeft(0, baseClassCheck)
