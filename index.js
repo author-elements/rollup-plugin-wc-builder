@@ -125,7 +125,7 @@ export default function wcbuilder (options = {}) {
 
       if (options.requiresBaseElement === true) {
         let baseClassCheck = `
-          if (!AuthorBaseElement) {
+          if (!window.hasOwnProperty('AuthorBaseElement')) {
             console.error('[ERROR] <${build.tagName}> Required dependency "AuthorBaseElement" not found.')
             console.info('AuthorBaseElement is available at ${localPkg.repository.url.replace(/git\+|\.git/gi, '').replace(build.tagName.replace('author-', ''), 'base')}')
           }
