@@ -116,7 +116,7 @@ export default function wcbuilder (options = {}) {
           let missingDependencies = Array.from(new Set([${options.dependencies.map(dep => '\'' + dep + '\'')}])).filter(dep => !customElements.get(dep))
           if (missingDependencies.length > 0) {
             console.error(\`[ERROR] <${build.tagName}> Required dependenc\${missingDependencies.length !== 1 ? 'ies' : 'y'} not found: \${missingDependencies.map(d => \`<\${d}>\`).join(', ').replace(', ' + missingDependencies[missingDependencies.length - 1], ' and ' + missingDependencies[missingDependencies.length - 1])}\`)
-            missingDependencies.forEach((dep, i) => console.info(\`\${i+1}. <\${dep}> is available at \${'${localPkg.repository.url.replace(/git\+|\.git/i, '')}'.replace('${build.tagName.replace('author-', '')}', dep.replace('author-', ''))}\`))
+            missingDependencies.forEach((dep, i) => console.info(\`\${i+1}. <\${dep}> is available at \${'${localPkg.repository.url.replace(/git\+|\.git/gi, '')}'.replace('${build.tagName.replace('author-', '')}', dep.replace('author-', ''))}\`))
           }
         })();
         `
