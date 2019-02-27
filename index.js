@@ -6,9 +6,19 @@ const path = require('path')
 const postcss = require('postcss')
 const cleanCSS = new (require('clean-css'))()
 const minifyHTML = require('html-minifier').minify
+const localPkg = require(path.join(process.cwd(), 'package.json'))
 
 export default function wcbuilder (options = {}) {
   const filter = createFilter(options.include, options.exclude)
+
+  if (!localPkg.hasOwnProperty('repository')) {
+    throw new Error(`The local package.json must have a repository attribute with a url sub-attribute, such as:\n${JSON.stringify({
+      repository: {
+        type: 'git',
+        url: 'git+https://github.com/owner/repo.git'
+      }
+    }, null, 2)}\n`)
+  }
 
   const build = {
     css: null,
@@ -97,6 +107,31 @@ export default function wcbuilder (options = {}) {
       build.processJS(code)
       build.processCSS(filepath)
       build.processTemplate(filepath)
+
+      // Provide a base element check in each webcomponent file.
+      options.requiresBaseElement = options.hasOwnProperty('requiresBaseElement') ? options.requiresBaseElement : true
+
+      if (options.hasOwnProperty('dependencies')) {
+        let dependencyCheck = `(function () {
+          let missingDependencies = Array.from(new Set([${options.dependencies.map(dep => '\'' + dep + '\'')}])).filter(dep => !customElements.get(dep))
+          if (missingDependencies.length > 0) {
+            console.error(\`[ERROR] <${build.tagName}> Required dependenc\${missingDependencies.length !== 1 ? 'ies' : 'y'} not found: \${missingDependencies.map(d => \`<\${d}>\`).join(', ').replace(', ' + missingDependencies[missingDependencies.length - 1], ' and ' + missingDependencies[missingDependencies.length - 1])}\`)
+            missingDependencies.forEach((dep, i) => console.info(\`\${i+1}. <\${dep}> is available at \${'${localPkg.repository.url.replace(/git\+|\.git/i, '')}'.replace('${build.tagName.replace('author-', '')}', dep.replace('author-', ''))}\`))
+          }
+        })();
+        `
+        magicString.prependLeft(0, dependencyCheck)
+      }
+
+      if (options.requiresBaseElement === true) {
+        let baseClassCheck = `
+          if (!AuthorBaseElement) {
+            console.error('[ERROR] <${build.tagName}> Required dependency "AuthorBaseElement" not found.')
+            console.info('AuthorBaseElement is available at ${localPkg.repository.url.replace(/git\+|\.git/gi, '')}')
+          }
+        `
+        magicString.prependLeft(0, baseClassCheck)
+      }
 
       // Concatenate results
       let token = '{{TEMPLATE-STRING}}'
